@@ -1,5 +1,12 @@
 import { StatusBar } from "expo-status-bar";
-import { SafeAreaView, StyleSheet, Text, View, Button } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  Platform,
+} from "react-native";
 import * as Notifications from "expo-notifications";
 import { useEffect } from "react";
 
@@ -29,21 +36,23 @@ export default function App() {
     }
     permissoesIos();
 
-    /* Ouvinte de evento para as notificações recebidas */
-    Notifications.addNotificationResponseReceivedListener((notificacao) => {
-      console.log(notificacao);
-    });
     /* Ouvinte de evento para as respostas dadas às notificações */
-    Notifications.addNotificationReceivedListener((resposta) => {
-      console.log(resposta);
+    Notifications.addNotificationReceivedListener((notificacao) => {
+      console.log(notificacao);
+
+      /* Ouvinte de evento para as notificações recebidas, ou seja, quando a notificação aparece no topo da tela do dispositivo */
+      Notifications.addNotificationResponseReceivedListener((resposta) => {
+        console.log(resposta.notification.request.content.data);
+      });
     });
   }, []);
 
   const enviarMensagem = async () => {
     const mensagem = {
-      title: "lembrete",
+      title: "lembrete ♠️ ♣️ ♥️ ♦️ 🃏 ",
       body: "Não se esqueça de tomar água!",
-      sound: "default",
+      sound: Platform.OS === "ios" ? "default" : "", //necessário pro iOS
+      data: { usuario: "Gabriel 🐣", cidade: "São Paulo 📍" },
     };
 
     await Notifications.scheduleNotificationAsync({
