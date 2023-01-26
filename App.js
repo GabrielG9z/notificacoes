@@ -8,7 +8,7 @@ import {
   Platform,
 } from "react-native";
 import * as Notifications from "expo-notifications";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 /* Manipulador de eventos de notificação */
 Notifications.setNotificationHandler({
@@ -22,6 +22,8 @@ Notifications.setNotificationHandler({
 });
 
 export default function App() {
+  const [dados, setDados] = useState(null);
+
   useEffect(() => {
     /* Necessário para IOS */
     async function permissoesIos() {
@@ -43,6 +45,7 @@ export default function App() {
       /* Ouvinte de evento para as notificações recebidas, ou seja, quando a notificação aparece no topo da tela do dispositivo */
       Notifications.addNotificationResponseReceivedListener((resposta) => {
         console.log(resposta.notification.request.content.data);
+        setDados(resposta.notification.request.content.data);
       });
     });
   }, []);
@@ -68,7 +71,14 @@ export default function App() {
         <Text>Exemplo de sistema de notificações local</Text>
         <View style={styles.botao}>
           <Button title="Disparar Notificação" onPress={enviarMensagem} />
+          {dados && (
+            <View>
+              <Text> {dados.usuario} </Text>
+              <Text> {dados.cidade} </Text>
+            </View>
+          )}
         </View>
+
         <StatusBar style="auto" />
       </SafeAreaView>
     </>
@@ -87,5 +97,9 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     margin: 6,
     borderColor: "green",
+  },
+  conteudo: {
+    marginVertical: 8,
+    backgroundColor: "purple",
   },
 });
